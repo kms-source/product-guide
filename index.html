@@ -364,8 +364,17 @@
     .prod-vol {
       font-size: var(--fs-sub);
       font-weight: 700;
-      color: var(--text-muted);
+      color: var(--text-sub);
+      margin-top: 4px;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+    .prod-price {
+      font-size: var(--fs-sub);
+      font-weight: 800;
+      color: var(--primary-dark);
       margin-top: 2px;
+      line-height: 1.4;
     }
     .prod-summary {
       font-size: var(--fs-sub);
@@ -393,6 +402,21 @@
       border: 1px solid var(--border);
       background: #eef2ef;
       flex-shrink: 0;
+    }
+    .detail-vol {
+      font-size: var(--fs-sub);
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-top: 5px;
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+    .detail-price {
+      font-size: var(--fs-base);
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-top: 4px;
+      line-height: 1.45;
     }
     .summary-box {
       font-size: var(--fs-base);
@@ -629,6 +653,17 @@
       return String(k || '').replace(/\s+/g, '').trim();
     }
 
+    function formatPrice(val) {
+      const raw = String(val || '').trim();
+      if (!raw) return '';
+      if (/원$/.test(raw)) return raw;
+      const num = Number(raw.replace(/,/g, ''));
+      if (!Number.isNaN(num) && num > 0) {
+        return num.toLocaleString('ko-KR') + '원';
+      }
+      return raw;
+    }
+
     function normalizeImgUrl(url) {
       const u = String(url || '').trim();
       if (!u) return '';
@@ -699,8 +734,10 @@
           if (!name) continue;
 
           const category = getCol(r, ['카테고리', '분류']) || '기타';
-          const line = getCol(r, ['라인', '제품라인', '브랜드라인']) || '기본 라인';
-          const volume = getCol(r, ['용량', '규격']);
+          const priceRaw = getCol(r, ['소비자가', '판매가', '가격']);
+          const price = formatPrice(priceRaw);
+          const composition = getCol(r, ['구성 및 용량', '용량 및 구성', '구성및용량', '용량및구성', '용량', '구성', '규격']);
+          const line = getCol(r, ['라인', '제품라인', '브랜드라인']) || category;
           const summary = getCol(r, ['한줄요약', '요약', '설명']);
           const spRaw = getCol(r, ['셀링포인트', '특장점', '포인트']);
           const sellingPoints = spRaw
@@ -720,7 +757,8 @@
             category,
             line,
             name,
-            volume,
+            price,
+            composition,
             summary,
             sellingPoints,
             thumb,
@@ -768,11 +806,12 @@
         thumbHtml +
         '<div class="prod-info">' +
         '<div class="prod-badges">' +
-        '<span class="badge">' + escapeHtml(p.line) + '</span>' +
+        '<span class="badge">' + escapeHtml(p.category) + '</span>' +
         (p.videoUrl ? '<span class="badge video">▶ 교육영상</span>' : '') +
         '</div>' +
         '<div class="prod-name">' + escapeHtml(p.name) + '</div>' +
-        (p.volume ? '<div class="prod-vol">' + escapeHtml(p.volume) + '</div>' : '') +
+        (p.composition ? '<div class="prod-vol">구성: ' + escapeHtml(p.composition) + '</div>' : '') +
+        (p.price ? '<div class="prod-price">소비자가: ' + escapeHtml(p.price) + '</div>' : '') +
         (p.summary ? '<div class="prod-summary">' + escapeHtml(p.summary) + '</div>' : '') +
         '</div></button>';
     }
@@ -825,9 +864,10 @@
           ? '<img class="detail-thumb" src="' + escapeHtml(p.thumb) + '" alt="' + escapeHtml(p.name) + '" onerror="this.style.display=\'none\'" />'
           : '<div class="thumb-placeholder" style="width:96px;height:96px;">이미지<br>준비중</div>') +
         '<div style="flex:1;min-width:0;">' +
-        '<div class="prod-badges"><span class="badge">' + escapeHtml(p.category) + '</span><span class="badge">' + escapeHtml(p.line) + '</span></div>' +
+        '<div class="prod-badges"><span class="badge">' + escapeHtml(p.category) + '</span></div>' +
         '<div style="font-size:var(--fs-title);font-weight:800;color:var(--text-main);line-height:1.3;word-break:keep-all;">' + escapeHtml(p.name) + '</div>' +
-        (p.volume ? '<div style="font-size:var(--fs-sub);font-weight:700;color:var(--text-muted);margin-top:4px;">용량: ' + escapeHtml(p.volume) + '</div>' : '') +
+        (p.composition ? '<div class="detail-vol">구성: ' + escapeHtml(p.composition) + '</div>' : '') +
+        (p.price ? '<div class="detail-price">소비자가: ' + escapeHtml(p.price) + '</div>' : '') +
         '</div></div>' +
         (p.summary ? '<div class="summary-box">' + escapeHtml(p.summary) + '</div>' : '') +
         '</div>' +
@@ -873,7 +913,8 @@
       if (q) {
         const matched = state.products.filter(p =>
           p.name.toLowerCase().includes(q) ||
-          p.line.toLowerCase().includes(q) ||
+          p.composition.toLowerCase().includes(q) ||
+          p.price.toLowerCase().includes(q) ||
           p.category.toLowerCase().includes(q) ||
           p.summary.toLowerCase().includes(q) ||
           p.sellingPoints.some(s => s.toLowerCase().includes(q))
@@ -888,33 +929,24 @@
         return;
       }
 
-      if (state.selectedLine) {
-        const inLine = state.products.filter(p => p.line === state.selectedLine);
+      if (state.selectedCategory && state.selectedCategory !== '전체') {
+        const inCat = state.products.filter(p => p.category === state.selectedCategory);
         mainEl.innerHTML =
           '<div class="nav-bar">' +
-          '<button type="button" class="nav-btn" data-act="backToLines">← 라인 선택으로 돌아가기</button>' +
-          '<button type="button" class="nav-btn home" data-act="goHome">🏠 처음</button>' +
+          '<button type="button" class="nav-btn home" data-act="goHome">🏠 전체 보기</button>' +
           '</div>' +
           '<div class="card">' +
-          '<div class="section-head"><span class="section-title">' + escapeHtml(state.selectedLine) + '</span><span class="section-meta">' + inLine.length + '개 제품</span></div>' +
-          '<div class="prod-list">' + inLine.map(renderProductCard).join('') + '</div>' +
+          '<div class="section-head"><span class="section-title">' + escapeHtml(state.selectedCategory) + '</span><span class="section-meta">' + inCat.length + '개 제품</span></div>' +
+          '<div class="prod-list">' + inCat.map(renderProductCard).join('') + '</div>' +
           '</div>';
         return;
       }
 
       const categories = ['전체', ...new Set(state.products.map(p => p.category))];
-      const filteredByCat = state.selectedCategory === '전체'
-        ? state.products
-        : state.products.filter(p => p.category === state.selectedCategory);
-
-      const lineMap = new Map();
-      filteredByCat.forEach(p => {
-        if (!lineMap.has(p.line)) {
-          lineMap.set(p.line, { line: p.line, category: p.category, count: 0 });
-        }
-        lineMap.get(p.line).count++;
+      const catCounts = new Map();
+      state.products.forEach(p => {
+        catCounts.set(p.category, (catCounts.get(p.category) || 0) + 1);
       });
-      const lines = Array.from(lineMap.values());
 
       mainEl.innerHTML =
         '<div class="card">' +
@@ -923,15 +955,9 @@
         categories.map(c => '<button type="button" class="cat-btn' + (state.selectedCategory === c ? ' active' : '') + '" data-cat="' + escapeHtml(c) + '">' + escapeHtml(c) + '</button>').join('') +
         '</div></div>' +
         '<div class="card">' +
-        '<div class="section-head"><span class="section-title">라인을 눌러 제품을 확인하세요</span><span class="section-meta">' + lines.length + '개 라인</span></div>' +
-        '<div class="line-grid">' +
-        lines.map(l =>
-          '<button type="button" class="line-card" data-line="' + escapeHtml(l.line) + '">' +
-          '<div><div class="line-cat">' + escapeHtml(l.category) + '</div><div class="line-name">' + escapeHtml(l.line) + '</div></div>' +
-          '<div class="line-count">제품 ' + l.count + '개 보기 →</div>' +
-          '</button>'
-        ).join('') +
-        '</div></div>';
+        '<div class="section-head"><span class="section-title">전체 제품 목록</span><span class="section-meta">' + state.products.length + '개 제품</span></div>' +
+        '<div class="prod-list">' + state.products.map(renderProductCard).join('') + '</div>' +
+        '</div>';
     }
 
     // 고정 헤더 & 검색 이벤트 (1회만 바인딩)
@@ -966,14 +992,6 @@
         return;
       }
 
-      const lineBtn = e.target.closest('[data-line]');
-      if (lineBtn) {
-        state.selectedLine = lineBtn.getAttribute('data-line');
-        window.scrollTo(0, 0);
-        renderMain();
-        return;
-      }
-
       const prodBtn = e.target.closest('[data-open-prod]');
       if (prodBtn) {
         state.selectedProductId = prodBtn.getAttribute('data-open-prod');
@@ -985,17 +1003,14 @@
       const actBtn = e.target.closest('[data-act]');
       if (actBtn) {
         const act = actBtn.getAttribute('data-act');
-        if (act === 'backToLines') {
-          state.selectedLine = null;
-          window.scrollTo(0, 0);
-          renderMain();
-        } else if (act === 'backFromDetail') {
+        if (act === 'backFromDetail') {
           state.selectedProductId = null;
           window.scrollTo(0, 0);
           renderMain();
         } else if (act === 'goHome') {
           state.selectedProductId = null;
           state.selectedLine = null;
+          state.selectedCategory = '전체';
           state.searchQuery = '';
           searchInpEl.value = '';
           window.scrollTo(0, 0);
