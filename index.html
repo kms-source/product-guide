@@ -2,291 +2,401 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0" />
   <title>제품 교육 가이드</title>
   <style>
+    :root {
+      --bg: #f4f6f4;
+      --surface: #ffffff;
+      --surface-soft: #f8faf8;
+      --border: #dce3de;
+      --text-main: #18221d;
+      --text-sub: #4b5c53;
+      --text-muted: #6c7d74;
+      --primary: #1b5e4a;
+      --primary-dark: #134435;
+      --primary-soft: #e6f2ed;
+      --accent: #b45309;
+      --accent-soft: #fef3c7;
+      --shadow: 0 2px 10px rgba(24, 34, 29, 0.06);
+      --fs-base: 16px;
+      --fs-title: 19px;
+      --fs-card-title: 17px;
+      --fs-sub: 14px;
+      --fs-badge: 12px;
+    }
+
+    body.large-text {
+      --fs-base: 19px;
+      --fs-title: 22px;
+      --fs-card-title: 20px;
+      --fs-sub: 16px;
+      --fs-badge: 14px;
+    }
+
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
     html, body {
       margin: 0;
       padding: 0;
-      background-color: #090d16;
-      color: #f1f5f9;
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      font-size: var(--fs-base);
+      line-height: 1.5;
       overflow-x: hidden;
     }
+
     .wrap {
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
       margin: 0 auto;
-      padding: 12px 12px 72px 12px;
+      padding: 12px 14px 80px 14px;
     }
-    .card {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 16px;
-      padding: 12px;
-      margin-bottom: 10px;
+
+    /* 상단 헤더 */
+    .header-card {
+      background: var(--primary);
+      color: #ffffff;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 14px rgba(27, 94, 74, 0.18);
     }
-    .header {
+    .header-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      margin-bottom: 12px;
     }
-    .title-box { min-width: 0; }
     .app-title {
-      font-size: 16px;
-      font-weight: 900;
-      color: #ffffff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: var(--fs-title);
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      line-height: 1.25;
     }
     .app-sub {
-      font-size: 11px;
-      color: #94a3b8;
-      margin-top: 2px;
+      font-size: 13px;
+      color: #d1fae5;
+      margin-top: 3px;
     }
     .header-actions {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 6px;
-      flex-shrink: 0;
     }
-    .icon-btn {
-      height: 34px;
-      padding: 0 10px;
+    .h-btn {
+      height: 40px;
       border-radius: 10px;
-      border: 1px solid #334155;
-      background: #060a13;
-      color: #e2e8f0;
-      font-size: 12px;
-      font-weight: 800;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
       cursor: pointer;
-    }
-    .icon-btn.accent {
-      border-color: rgba(251, 191, 36, 0.5);
-      background: rgba(251, 191, 36, 0.14);
-      color: #fde68a;
-    }
-    .search-box {
       display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .h-btn.active {
+      background: #ffffff;
+      color: var(--primary-dark);
+      border-color: #ffffff;
+    }
+
+    /* 검색창 (DOM 고정으로 한글 입력 깨짐 방지) */
+    .search-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 6px 8px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
       gap: 6px;
+      box-shadow: var(--shadow);
+    }
+    .search-card:focus-within {
+      border-color: var(--primary);
+    }
+    .search-icon {
+      font-size: 18px;
+      padding-left: 6px;
+      color: var(--text-muted);
+      flex-shrink: 0;
     }
     .search-input {
       flex: 1;
       height: 42px;
-      border-radius: 12px;
-      border: 1px solid #334155;
-      background: #060a13;
-      color: #ffffff;
-      padding: 0 12px;
-      font-size: 13px;
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      font-size: var(--fs-base);
+      font-weight: 600;
       outline: none;
+      min-width: 0;
     }
-    .search-input:focus { border-color: #10b981; }
+    .search-input::placeholder {
+      color: #8b9a92;
+      font-weight: 500;
+    }
     .clear-btn {
-      height: 42px;
-      padding: 0 12px;
-      border-radius: 12px;
-      border: 1px solid #334155;
-      background: #1e293b;
-      color: #cbd5e1;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .section-title {
-      font-size: 13px;
-      font-weight: 900;
-      color: #fcd34d;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .cat-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .cat-btn {
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid #334155;
-      background: #060a13;
-      color: #94a3b8;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .cat-btn.active {
-      border-color: #34d399;
-      background: rgba(16, 185, 129, 0.2);
-      color: #a7f3d0;
-    }
-    .line-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-    }
-    .line-card {
-      text-align: left;
-      padding: 14px 12px;
-      border-radius: 14px;
-      border: 1px solid #1e293b;
-      background: linear-gradient(145deg, #0b1324, #060a13);
-      color: #ffffff;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 82px;
-    }
-    .line-card:active { border-color: #34d399; }
-    .line-cat {
-      font-size: 10px;
-      font-weight: 800;
-      color: #34d399;
-      margin-bottom: 4px;
-    }
-    .line-name {
-      font-size: 14px;
-      font-weight: 900;
-      line-height: 1.3;
-      word-break: keep-all;
-    }
-    .line-count {
-      font-size: 11px;
-      color: #94a3b8;
-      margin-top: 6px;
-    }
-    .back-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .back-btn {
       height: 36px;
       padding: 0 12px;
       border-radius: 10px;
-      border: 1px solid #334155;
-      background: #0f172a;
-      color: #e2e8f0;
-      font-size: 12px;
+      border: none;
+      background: #e5ece8;
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: none;
+    }
+    .clear-btn.show { display: inline-block; }
+
+    /* 공통 카드 */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: var(--fs-card-title);
       font-weight: 800;
+      color: var(--text-main);
+    }
+    .section-meta {
+      font-size: var(--fs-sub);
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* 카테고리 버튼 */
+    .cat-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .cat-btn {
+      min-height: 44px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text-sub);
+      font-size: var(--fs-base);
+      font-weight: 700;
       cursor: pointer;
     }
-    .crumb {
-      font-size: 12px;
-      font-weight: 800;
-      color: #94a3b8;
-      text-align: right;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .cat-btn.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #ffffff;
     }
+
+    /* 라인 선택 그리드 */
+    .line-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .line-card {
+      text-align: left;
+      padding: 16px 14px;
+      border-radius: 16px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 104px;
+    }
+    .line-card:active {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+    .line-cat {
+      display: inline-block;
+      font-size: var(--fs-badge);
+      font-weight: 800;
+      color: var(--primary);
+      background: var(--primary-soft);
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      align-self: flex-start;
+    }
+    .line-name {
+      font-size: var(--fs-card-title);
+      font-weight: 800;
+      line-height: 1.35;
+      word-break: keep-all;
+      color: var(--text-main);
+    }
+    .line-count {
+      font-size: var(--fs-sub);
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    /* 상단 네비게이션 바 */
+    .nav-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .nav-btn {
+      flex: 1;
+      height: 46px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text-main);
+      font-size: var(--fs-base);
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+    .nav-btn.home {
+      flex: 0 0 auto;
+      padding: 0 16px;
+      background: var(--primary-soft);
+      border-color: #b7d8cb;
+      color: var(--primary-dark);
+    }
+
+    /* 제품 리스트 카드 */
     .prod-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 12px;
     }
     .prod-item {
       width: 100%;
       text-align: left;
       display: flex;
-      gap: 12px;
+      gap: 14px;
       align-items: center;
-      padding: 10px;
-      border-radius: 14px;
-      border: 1px solid #1e293b;
-      background: #060a13;
-      color: #ffffff;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text-main);
       cursor: pointer;
     }
-    .prod-item:active { border-color: #34d399; }
+    .prod-item:active {
+      border-color: var(--primary);
+      background: var(--surface-soft);
+    }
     .thumb {
-      width: 72px;
-      height: 72px;
+      width: 84px;
+      height: 84px;
       border-radius: 12px;
       object-fit: cover;
-      background: #1e293b;
-      border: 1px solid #334155;
+      background: #eef2ef;
+      border: 1px solid var(--border);
       flex-shrink: 0;
     }
     .thumb-placeholder {
-      width: 72px;
-      height: 72px;
+      width: 84px;
+      height: 84px;
       border-radius: 12px;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #64748b;
-      font-size: 11px;
-      font-weight: 800;
+      background: #eef2ef;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       flex-shrink: 0;
-      padding: 4px;
+      padding: 6px;
+      line-height: 1.3;
     }
     .prod-info { flex: 1; min-width: 0; }
     .prod-badges {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-      margin-bottom: 4px;
+      gap: 5px;
+      margin-bottom: 5px;
     }
     .badge {
-      font-size: 10px;
+      font-size: var(--fs-badge);
       font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 999px;
-      background: rgba(16, 185, 129, 0.16);
-      color: #6ee7b7;
-      border: 1px solid rgba(52, 211, 153, 0.35);
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
     }
     .badge.video {
-      background: rgba(251, 191, 36, 0.16);
-      color: #fde68a;
-      border-color: rgba(251, 191, 36, 0.4);
+      background: var(--accent-soft);
+      color: var(--accent);
     }
     .prod-name {
-      font-size: 14px;
-      font-weight: 900;
-      color: #ffffff;
-      line-height: 1.3;
+      font-size: var(--fs-card-title);
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.35;
+      word-break: keep-all;
     }
     .prod-vol {
-      font-size: 11px;
-      color: #94a3b8;
+      font-size: var(--fs-sub);
+      font-weight: 700;
+      color: var(--text-muted);
       margin-top: 2px;
     }
     .prod-summary {
-      font-size: 12px;
-      color: #cbd5e1;
-      margin-top: 4px;
-      line-height: 1.4;
+      font-size: var(--fs-sub);
+      color: var(--text-sub);
+      margin-top: 5px;
+      line-height: 1.45;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
+
+    /* 상세 화면 */
     .detail-hero {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .detail-thumb {
-      width: 88px;
-      height: 88px;
+      width: 96px;
+      height: 96px;
       border-radius: 14px;
       object-fit: cover;
-      border: 1px solid #334155;
-      background: #1e293b;
+      border: 1px solid var(--border);
+      background: #eef2ef;
       flex-shrink: 0;
+    }
+    .summary-box {
+      font-size: var(--fs-base);
+      color: var(--text-main);
+      line-height: 1.6;
+      background: var(--surface-soft);
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      word-break: keep-all;
     }
     .video-wrap {
       position: relative;
@@ -295,7 +405,7 @@
       border-radius: 12px;
       overflow: hidden;
       background: #000;
-      border: 1px solid #334155;
+      border: 1px solid var(--border);
     }
     .video-wrap iframe {
       position: absolute;
@@ -307,28 +417,30 @@
     .sp-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 10px;
     }
     .sp-item {
-      background: #060a13;
-      border: 1px solid rgba(52, 211, 153, 0.3);
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 13px;
-      line-height: 1.45;
-      color: #e2e8f0;
+      background: var(--primary-soft);
+      border: 1px solid #c6e2d6;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: var(--fs-base);
+      font-weight: 600;
+      line-height: 1.55;
+      color: var(--text-main);
       display: flex;
-      gap: 8px;
+      gap: 10px;
       align-items: flex-start;
+      word-break: keep-all;
     }
     .sp-num {
-      width: 20px;
-      height: 20px;
+      width: 26px;
+      height: 26px;
       border-radius: 999px;
-      background: #10b981;
-      color: #060a13;
-      font-size: 11px;
-      font-weight: 900;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -338,50 +450,79 @@
     .detail-img {
       width: 100%;
       display: block;
-      border-radius: 10px;
-      border: 1px solid #1e293b;
-      margin-bottom: 8px;
-      background: #060a13;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+      background: #eef2ef;
     }
     .link-btn {
       display: block;
       width: 100%;
       text-align: center;
       text-decoration: none;
-      padding: 12px;
+      padding: 14px;
       border-radius: 12px;
-      background: #10b981;
-      color: #060a13;
-      font-size: 13px;
-      font-weight: 900;
-      margin-top: 6px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: var(--fs-base);
+      font-weight: 800;
+      margin-top: 8px;
     }
     .empty-box {
       text-align: center;
-      padding: 28px 14px;
-      color: #94a3b8;
-      font-size: 13px;
+      padding: 30px 14px;
+      color: var(--text-sub);
+      font-size: var(--fs-base);
       line-height: 1.6;
     }
     .toast {
       position: fixed;
-      top: 12px;
+      top: 16px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 999;
-      background: #1e293b;
-      color: #fde047;
-      border: 1px solid #fbbf24;
-      padding: 7px 14px;
+      background: #18221d;
+      color: #ffffff;
+      padding: 10px 18px;
       border-radius: 999px;
-      font-size: 12px;
-      font-weight: 800;
+      font-size: 14px;
+      font-weight: 700;
       white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+      display: none;
     }
+    .toast.show { display: block; }
   </style>
 </head>
 <body>
-  <div id="app" class="wrap"></div>
+  <div id="toast" class="toast"></div>
+
+  <div class="wrap">
+    <!-- 상단 고정 헤더 -->
+    <header class="header-card">
+      <div class="header-top">
+        <div>
+          <div class="app-title">제품 교육 가이드</div>
+          <div class="app-sub">카테고리 · 라인별 제품 안내 및 교육 자료</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button type="button" id="btnFont" class="h-btn">가+ 글자 크게</button>
+        <button type="button" id="btnRefresh" class="h-btn">↻ 새로고침</button>
+        <button type="button" id="btnShare" class="h-btn">📤 앱 공유</button>
+      </div>
+    </header>
+
+    <!-- 고정 검색바 (한글 IME 조합 보호) -->
+    <div id="searchCard" class="search-card">
+      <span class="search-icon">🔍</span>
+      <input id="searchInp" class="search-input" type="search" placeholder="제품명이나 키워드를 입력하세요" autocomplete="off" />
+      <button type="button" id="btnClearSearch" class="clear-btn">지우기</button>
+    </div>
+
+    <!-- 동적 콘텐츠 영역 -->
+    <main id="mainContent"></main>
+  </div>
 
   <script>
     const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR421CPOCTqRjP5M8FcqTsuSgKXsiTKghCzBl9sl51a2nMmfqhUg4r_hD_Oz1HXeYdz6cwZJpfmHXCt/pub?output=csv';
@@ -395,17 +536,30 @@
       selectedLine: null,
       selectedProductId: null,
       searchQuery: '',
-      toast: ''
+      largeText: localStorage.getItem('pg_large_text') === '1'
     };
 
+    const toastEl = document.getElementById('toast');
+    const searchCardEl = document.getElementById('searchCard');
+    const searchInpEl = document.getElementById('searchInp');
+    const clearSearchBtnEl = document.getElementById('btnClearSearch');
+    const fontBtnEl = document.getElementById('btnFont');
+    const mainEl = document.getElementById('mainContent');
+
+    function applyFontMode() {
+      document.body.classList.toggle('large-text', state.largeText);
+      fontBtnEl.classList.toggle('active', state.largeText);
+      fontBtnEl.textContent = state.largeText ? '가- 기본 글씨' : '가+ 글자 크게';
+    }
+    applyFontMode();
+
     function notify(msg) {
-      state.toast = msg;
-      render();
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
       clearTimeout(window.__toastTimer);
       window.__toastTimer = setTimeout(() => {
-        state.toast = '';
-        render();
-      }, 2000);
+        toastEl.classList.remove('show');
+      }, 2200);
     }
 
     function escapeHtml(str) {
@@ -416,7 +570,7 @@
         .replace(/"/g, '&quot;');
     }
 
-    // RFC 4180 호환 CSV 파서 (셀 안의 쉼표·줄바꿈 지원)
+    // RFC 4180 호환 CSV 파서
     function parseCSV(text) {
       const clean = text.replace(/^\uFEFF/, '');
       const rows = [];
@@ -469,7 +623,6 @@
       return String(k || '').replace(/\s+/g, '').trim();
     }
 
-    // 구글 드라이브 공유 링크를 이미지 직접 주소로 자동 변환
     function normalizeImgUrl(url) {
       const u = String(url || '').trim();
       if (!u) return '';
@@ -506,7 +659,7 @@
     async function loadSheetData(showToast) {
       state.loading = true;
       state.error = '';
-      render();
+      renderMain();
       try {
         const res = await fetch(SHEET_CSV_URL + '&_t=' + Date.now(), { cache: 'no-store' });
         if (!res.ok) throw new Error('시트 응답 오류 (' + res.status + ')');
@@ -515,7 +668,7 @@
         if (rows.length < 2) {
           state.products = [];
           state.loading = false;
-          render();
+          renderMain();
           return;
         }
 
@@ -573,12 +726,12 @@
 
         state.products = list;
         state.loading = false;
-        render();
-        if (showToast) notify('최신 시트 데이터를 불러왔습니다 (' + list.length + '개)');
+        renderMain();
+        if (showToast) notify('최신 자료를 불러왔습니다 (' + list.length + '개)');
       } catch (err) {
         state.loading = false;
-        state.error = '구글 시트를 불러오지 못했습니다. 웹에 게시 설정과 인터넷 연결을 확인해 주세요.';
-        render();
+        state.error = '구글 시트를 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 새로고침을 눌러주세요.';
+        renderMain();
       }
     }
 
@@ -610,7 +763,7 @@
         '<div class="prod-info">' +
         '<div class="prod-badges">' +
         '<span class="badge">' + escapeHtml(p.line) + '</span>' +
-        (p.videoUrl ? '<span class="badge video">▶ 영상</span>' : '') +
+        (p.videoUrl ? '<span class="badge video">▶ 교육영상</span>' : '') +
         '</div>' +
         '<div class="prod-name">' + escapeHtml(p.name) + '</div>' +
         (p.volume ? '<div class="prod-vol">' + escapeHtml(p.volume) + '</div>' : '') +
@@ -625,26 +778,26 @@
       let videoSection = '';
       if (p.embedUrl) {
         videoSection = '<div class="card">' +
-          '<div class="section-title"><span>🎬 제품 교육 영상</span></div>' +
+          '<div class="section-head"><span class="section-title">🎬 제품 교육 영상</span></div>' +
           '<div class="video-wrap"><iframe src="' + escapeHtml(p.embedUrl) + '" allowfullscreen></iframe></div>' +
           '</div>';
       } else if (p.videoUrl) {
         videoSection = '<div class="card">' +
-          '<div class="section-title"><span>🎬 제품 교육 영상</span></div>' +
+          '<div class="section-head"><span class="section-title">🎬 제품 교육 영상</span></div>' +
           '<a class="link-btn" href="' + escapeHtml(p.videoUrl) + '" target="_blank" rel="noopener">교육 영상 보러가기</a>' +
           '</div>';
       }
 
       const spSection = p.sellingPoints.length
         ? '<div class="card">' +
-          '<div class="section-title"><span>✨ 핵심 셀링 포인트</span></div>' +
+          '<div class="section-head"><span class="section-title">✨ 핵심 셀링 포인트</span></div>' +
           '<div class="sp-list">' +
           p.sellingPoints.map((pt, i) => '<div class="sp-item"><span class="sp-num">' + (i + 1) + '</span><span>' + escapeHtml(pt) + '</span></div>').join('') +
           '</div></div>'
         : '';
 
       const detailSection = '<div class="card">' +
-        '<div class="section-title"><span>📄 상세페이지 안내</span></div>' +
+        '<div class="section-head"><span class="section-title">📄 상세페이지 안내</span></div>' +
         (detailImages.length
           ? detailImages.map(src => '<img class="detail-img" src="' + escapeHtml(src) + '" alt="상세 이미지" />').join('')
           : '') +
@@ -652,83 +805,63 @@
           ? detailLinks.map((lnk, idx) => '<a class="link-btn" href="' + escapeHtml(lnk) + '" target="_blank" rel="noopener">상세페이지 바로 보기' + (detailLinks.length > 1 ? ' (' + (idx + 1) + ')' : '') + '</a>').join('')
           : '') +
         (!detailImages.length && !detailLinks.length
-          ? '<div class="empty-box" style="padding:14px 6px;">등록된 상세 이미지가 없습니다.<br>구글 시트의 <b>상세이미지</b> 칸에 이미지 주소나 링크를 입력해 주세요.</div>'
+          ? '<div class="empty-box" style="padding:16px 6px;">등록된 상세 이미지가 없습니다.</div>'
           : '') +
         '</div>';
 
-      return '<div class="back-bar">' +
-        '<button type="button" class="back-btn" data-act="backFromDetail">← 목록으로</button>' +
-        '<div class="crumb">' + escapeHtml(p.category) + ' &gt; ' + escapeHtml(p.line) + '</div>' +
+      return '<div class="nav-bar">' +
+        '<button type="button" class="nav-btn" data-act="backFromDetail">← 목록으로 돌아가기</button>' +
+        '<button type="button" class="nav-btn home" data-act="goHome">🏠 처음</button>' +
         '</div>' +
         '<div class="card">' +
         '<div class="detail-hero">' +
         (p.thumb
           ? '<img class="detail-thumb" src="' + escapeHtml(p.thumb) + '" alt="' + escapeHtml(p.name) + '" onerror="this.style.display=\'none\'" />'
-          : '<div class="thumb-placeholder" style="width:88px;height:88px;">이미지<br>준비중</div>') +
+          : '<div class="thumb-placeholder" style="width:96px;height:96px;">이미지<br>준비중</div>') +
         '<div style="flex:1;min-width:0;">' +
         '<div class="prod-badges"><span class="badge">' + escapeHtml(p.category) + '</span><span class="badge">' + escapeHtml(p.line) + '</span></div>' +
-        '<div style="font-size:17px;font-weight:900;color:#fff;line-height:1.3;">' + escapeHtml(p.name) + '</div>' +
-        (p.volume ? '<div style="font-size:12px;color:#94a3b8;margin-top:3px;">용량: ' + escapeHtml(p.volume) + '</div>' : '') +
+        '<div style="font-size:var(--fs-title);font-weight:800;color:var(--text-main);line-height:1.3;word-break:keep-all;">' + escapeHtml(p.name) + '</div>' +
+        (p.volume ? '<div style="font-size:var(--fs-sub);font-weight:700;color:var(--text-muted);margin-top:4px;">용량: ' + escapeHtml(p.volume) + '</div>' : '') +
         '</div></div>' +
-        (p.summary ? '<div style="font-size:13px;color:#cbd5e1;line-height:1.5;background:#060a13;padding:10px;border-radius:10px;border:1px solid #1e293b;">' + escapeHtml(p.summary) + '</div>' : '') +
+        (p.summary ? '<div class="summary-box">' + escapeHtml(p.summary) + '</div>' : '') +
         '</div>' +
         videoSection +
         spSection +
         detailSection;
     }
 
-    function render() {
-      const app = document.getElementById('app');
-      const headerHtml =
-        (state.toast ? '<div class="toast">' + escapeHtml(state.toast) + '</div>' : '') +
-        '<div class="card header">' +
-        '<div class="title-box">' +
-        '<div class="app-title">제품 교육 가이드</div>' +
-        '<div class="app-sub">카테고리 · 라인별 제품 안내 및 교육 자료</div>' +
-        '</div>' +
-        '<div class="header-actions">' +
-        '<button type="button" class="icon-btn" data-act="refresh">↻ 새로고침</button>' +
-        '<button type="button" class="icon-btn accent" data-act="share">공유</button>' +
-        '</div></div>';
+    function renderMain() {
+      clearSearchBtnEl.classList.toggle('show', state.searchQuery.length > 0);
+      searchCardEl.style.display = state.selectedProductId ? 'none' : 'flex';
 
       if (state.loading) {
-        app.innerHTML = headerHtml + '<div class="card empty-box">구글 시트에서 제품 데이터를 불러오는 중입니다...</div>';
-        bind();
+        mainEl.innerHTML = '<div class="card empty-box">제품 자료를 불러오는 중입니다...</div>';
         return;
       }
 
       if (state.error) {
-        app.innerHTML = headerHtml + '<div class="card empty-box">' + escapeHtml(state.error) + '</div>';
-        bind();
+        mainEl.innerHTML = '<div class="card empty-box">' + escapeHtml(state.error) + '</div>';
         return;
       }
 
       if (state.products.length === 0) {
-        app.innerHTML = headerHtml +
+        mainEl.innerHTML =
           '<div class="card empty-box">' +
-          '<div style="font-size:14px;font-weight:900;color:#fff;margin-bottom:8px;">아직 등록된 제품이 없습니다</div>' +
-          '구글 시트 1행에 아래 제목을 넣고 2행부터 제품을 입력한 뒤<br>상단 <b>새로고침</b>을 눌러주세요.<br><br>' +
-          '<div style="background:#060a13;border:1px solid #334155;border-radius:10px;padding:10px;font-size:11px;color:#6ee7b7;word-break:keep-all;">' +
-          '카테고리 | 라인 | 제품명 | 용량 | 한줄요약 | 셀링포인트 | 썸네일 | 상세이미지 | 영상링크 | 노출여부' +
-          '</div></div>';
-        bind();
+          '<div style="font-weight:800;margin-bottom:8px;">아직 등록된 제품이 없습니다</div>' +
+          '구글 시트에 제품을 입력한 뒤 상단 <b>새로고침</b>을 눌러주세요.' +
+          '</div>';
         return;
       }
 
       if (state.selectedProductId) {
         const prod = state.products.find(p => p.id === state.selectedProductId);
         if (prod) {
-          app.innerHTML = headerHtml + renderDetail(prod);
-          bind();
+          mainEl.innerHTML = renderDetail(prod);
           return;
         }
         state.selectedProductId = null;
+        searchCardEl.style.display = 'flex';
       }
-
-      const searchBar = '<div class="card search-box">' +
-        '<input id="searchInp" class="search-input" type="text" value="' + escapeHtml(state.searchQuery) + '" placeholder="제품명, 라인, 키워드 검색..." />' +
-        (state.searchQuery ? '<button type="button" class="clear-btn" data-act="clearSearch">지우기</button>' : '') +
-        '</div>';
 
       const q = state.searchQuery.trim().toLowerCase();
       if (q) {
@@ -739,28 +872,27 @@
           p.summary.toLowerCase().includes(q) ||
           p.sellingPoints.some(s => s.toLowerCase().includes(q))
         );
-        app.innerHTML = headerHtml + searchBar +
+        mainEl.innerHTML =
           '<div class="card">' +
-          '<div class="section-title"><span>검색 결과 (' + matched.length + '건)</span></div>' +
+          '<div class="section-head"><span class="section-title">검색 결과</span><span class="section-meta">' + matched.length + '건</span></div>' +
           (matched.length
             ? '<div class="prod-list">' + matched.map(renderProductCard).join('') + '</div>'
-            : '<div class="empty-box">일치하는 제품이 없습니다.</div>') +
+            : '<div class="empty-box">입력하신 내용과 일치하는 제품이 없습니다.</div>') +
           '</div>';
-        bind();
         return;
       }
 
       if (state.selectedLine) {
         const inLine = state.products.filter(p => p.line === state.selectedLine);
-        app.innerHTML = headerHtml + searchBar +
-          '<div class="back-bar">' +
-          '<button type="button" class="back-btn" data-act="backToLines">← 라인 선택으로</button>' +
-          '<div class="crumb">' + escapeHtml(state.selectedLine) + ' (' + inLine.length + '개)</div>' +
+        mainEl.innerHTML =
+          '<div class="nav-bar">' +
+          '<button type="button" class="nav-btn" data-act="backToLines">← 라인 선택으로 돌아가기</button>' +
+          '<button type="button" class="nav-btn home" data-act="goHome">🏠 처음</button>' +
           '</div>' +
           '<div class="card">' +
+          '<div class="section-head"><span class="section-title">' + escapeHtml(state.selectedLine) + '</span><span class="section-meta">' + inLine.length + '개 제품</span></div>' +
           '<div class="prod-list">' + inLine.map(renderProductCard).join('') + '</div>' +
           '</div>';
-        bind();
         return;
       }
 
@@ -778,71 +910,93 @@
       });
       const lines = Array.from(lineMap.values());
 
-      app.innerHTML = headerHtml + searchBar +
+      mainEl.innerHTML =
         '<div class="card">' +
-        '<div class="section-title"><span>카테고리</span><span style="font-size:11px;color:#94a3b8;">총 ' + state.products.length + '개 제품</span></div>' +
+        '<div class="section-head"><span class="section-title">카테고리 선택</span><span class="section-meta">전체 ' + state.products.length + '개</span></div>' +
         '<div class="cat-tabs">' +
         categories.map(c => '<button type="button" class="cat-btn' + (state.selectedCategory === c ? ' active' : '') + '" data-cat="' + escapeHtml(c) + '">' + escapeHtml(c) + '</button>').join('') +
         '</div></div>' +
         '<div class="card">' +
-        '<div class="section-title"><span>라인 선택</span><span style="font-size:11px;color:#94a3b8;">' + lines.length + '개 라인</span></div>' +
+        '<div class="section-head"><span class="section-title">라인을 눌러 제품을 확인하세요</span><span class="section-meta">' + lines.length + '개 라인</span></div>' +
         '<div class="line-grid">' +
         lines.map(l =>
           '<button type="button" class="line-card" data-line="' + escapeHtml(l.line) + '">' +
           '<div><div class="line-cat">' + escapeHtml(l.category) + '</div><div class="line-name">' + escapeHtml(l.line) + '</div></div>' +
-          '<div class="line-count">제품 ' + l.count + '개 →</div>' +
+          '<div class="line-count">제품 ' + l.count + '개 보기 →</div>' +
           '</button>'
         ).join('') +
         '</div></div>';
-
-      bind();
     }
 
-    function bind() {
-      const sInp = document.getElementById('searchInp');
-      if (sInp) {
-        sInp.oninput = e => {
-          state.searchQuery = e.target.value;
-          const pos = e.target.selectionStart;
-          render();
-          const reInp = document.getElementById('searchInp');
-          if (reInp) {
-            reInp.focus();
-            reInp.setSelectionRange(pos, pos);
-          }
-        };
+    // 고정 헤더 & 검색 이벤트 (1회만 바인딩)
+    fontBtnEl.addEventListener('click', () => {
+      state.largeText = !state.largeText;
+      localStorage.setItem('pg_large_text', state.largeText ? '1' : '0');
+      applyFontMode();
+      notify(state.largeText ? '큰 글씨 모드가 켜졌습니다' : '기본 글씨 크기로 돌아왔습니다');
+    });
+
+    document.getElementById('btnRefresh').addEventListener('click', () => loadSheetData(true));
+    document.getElementById('btnShare').addEventListener('click', shareApp);
+
+    searchInpEl.addEventListener('input', e => {
+      state.searchQuery = e.target.value;
+      renderMain();
+    });
+
+    clearSearchBtnEl.addEventListener('click', () => {
+      state.searchQuery = '';
+      searchInpEl.value = '';
+      searchInpEl.focus();
+      renderMain();
+    });
+
+    // 동적 영역 클릭 이벤트 위임
+    mainEl.addEventListener('click', e => {
+      const catBtn = e.target.closest('[data-cat]');
+      if (catBtn) {
+        state.selectedCategory = catBtn.getAttribute('data-cat');
+        renderMain();
+        return;
       }
-      document.querySelectorAll('[data-cat]').forEach(el => {
-        el.onclick = () => {
-          state.selectedCategory = el.getAttribute('data-cat');
-          render();
-        };
-      });
-      document.querySelectorAll('[data-line]').forEach(el => {
-        el.onclick = () => {
-          state.selectedLine = el.getAttribute('data-line');
+
+      const lineBtn = e.target.closest('[data-line]');
+      if (lineBtn) {
+        state.selectedLine = lineBtn.getAttribute('data-line');
+        window.scrollTo(0, 0);
+        renderMain();
+        return;
+      }
+
+      const prodBtn = e.target.closest('[data-open-prod]');
+      if (prodBtn) {
+        state.selectedProductId = prodBtn.getAttribute('data-open-prod');
+        window.scrollTo(0, 0);
+        renderMain();
+        return;
+      }
+
+      const actBtn = e.target.closest('[data-act]');
+      if (actBtn) {
+        const act = actBtn.getAttribute('data-act');
+        if (act === 'backToLines') {
+          state.selectedLine = null;
           window.scrollTo(0, 0);
-          render();
-        };
-      });
-      document.querySelectorAll('[data-open-prod]').forEach(el => {
-        el.onclick = () => {
-          state.selectedProductId = el.getAttribute('data-open-prod');
+          renderMain();
+        } else if (act === 'backFromDetail') {
+          state.selectedProductId = null;
           window.scrollTo(0, 0);
-          render();
-        };
-      });
-      document.querySelectorAll('[data-act]').forEach(el => {
-        el.onclick = () => {
-          const act = el.getAttribute('data-act');
-          if (act === 'refresh') loadSheetData(true);
-          else if (act === 'share') shareApp();
-          else if (act === 'clearSearch') { state.searchQuery = ''; render(); }
-          else if (act === 'backToLines') { state.selectedLine = null; window.scrollTo(0, 0); render(); }
-          else if (act === 'backFromDetail') { state.selectedProductId = null; window.scrollTo(0, 0); render(); }
-        };
-      });
-    }
+          renderMain();
+        } else if (act === 'goHome') {
+          state.selectedProductId = null;
+          state.selectedLine = null;
+          state.searchQuery = '';
+          searchInpEl.value = '';
+          window.scrollTo(0, 0);
+          renderMain();
+        }
+      }
+    });
 
     loadSheetData(false);
   </script>
