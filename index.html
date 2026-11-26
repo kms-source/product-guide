@@ -697,6 +697,34 @@
       return id ? 'https://www.youtube.com/embed/' + id : '';
     }
 
+    function openProductDetail(prodId, pushHistory = true) {
+      state.selectedProductId = prodId;
+      if (pushHistory) {
+        history.pushState({ view: 'detail', prodId }, '', '#detail-' + encodeURIComponent(prodId));
+      }
+      window.scrollTo(0, 0);
+      renderMain();
+    }
+
+    function closeProductDetail(fromPopState = false) {
+      if (!state.selectedProductId) return;
+      state.selectedProductId = null;
+      if (!fromPopState && history.state && history.state.view === 'detail') {
+        history.back();
+        return;
+      }
+      window.scrollTo(0, 0);
+      renderMain();
+    }
+
+    window.addEventListener('popstate', (e) => {
+      if (state.selectedProductId) {
+        closeProductDetail(true);
+      } else if (e.state && e.state.view === 'detail' && e.state.prodId) {
+        openProductDetail(e.state.prodId, false);
+      }
+    });
+
     async function loadSheetData(showToast) {
       state.loading = true;
       state.error = '';
@@ -943,10 +971,6 @@
       }
 
       const categories = ['전체', ...new Set(state.products.map(p => p.category))];
-      const catCounts = new Map();
-      state.products.forEach(p => {
-        catCounts.set(p.category, (catCounts.get(p.category) || 0) + 1);
-      });
 
       mainEl.innerHTML =
         '<div class="card">' +
@@ -994,9 +1018,7 @@
 
       const prodBtn = e.target.closest('[data-open-prod]');
       if (prodBtn) {
-        state.selectedProductId = prodBtn.getAttribute('data-open-prod');
-        window.scrollTo(0, 0);
-        renderMain();
+        openProductDetail(prodBtn.getAttribute('data-open-prod'), true);
         return;
       }
 
@@ -1004,15 +1026,16 @@
       if (actBtn) {
         const act = actBtn.getAttribute('data-act');
         if (act === 'backFromDetail') {
-          state.selectedProductId = null;
-          window.scrollTo(0, 0);
-          renderMain();
+          closeProductDetail(false);
         } else if (act === 'goHome') {
           state.selectedProductId = null;
           state.selectedLine = null;
           state.selectedCategory = '전체';
           state.searchQuery = '';
           searchInpEl.value = '';
+          if (history.state && history.state.view === 'detail') {
+            history.replaceState({ view: 'home' }, '', location.pathname + location.search);
+          }
           window.scrollTo(0, 0);
           renderMain();
         }
