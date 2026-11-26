@@ -118,7 +118,7 @@
       border: 2px solid var(--border);
       border-radius: 14px;
       padding: 6px 8px;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -162,6 +162,31 @@
       display: none;
     }
     .clear-btn.show { display: inline-block; }
+
+    /* 추천 고민/성분 키워드 칩 */
+    .quick-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+    .chip-btn {
+      min-height: 38px;
+      padding: 6px 13px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text-sub);
+      font-size: var(--fs-sub);
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+    .chip-btn.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #ffffff;
+    }
 
     /* 공통 카드 */
     .card {
@@ -210,54 +235,6 @@
       border-color: var(--primary);
       background: var(--primary);
       color: #ffffff;
-    }
-
-    /* 라인 선택 그리드 */
-    .line-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-    .line-card {
-      text-align: left;
-      padding: 16px 14px;
-      border-radius: 16px;
-      border: 1.5px solid var(--border);
-      background: var(--surface-soft);
-      color: var(--text-main);
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 104px;
-    }
-    .line-card:active {
-      border-color: var(--primary);
-      background: var(--primary-soft);
-    }
-    .line-cat {
-      display: inline-block;
-      font-size: var(--fs-badge);
-      font-weight: 800;
-      color: var(--primary);
-      background: var(--primary-soft);
-      padding: 2px 8px;
-      border-radius: 6px;
-      margin-bottom: 8px;
-      align-self: flex-start;
-    }
-    .line-name {
-      font-size: var(--fs-card-title);
-      font-weight: 800;
-      line-height: 1.35;
-      word-break: keep-all;
-      color: var(--text-main);
-    }
-    .line-count {
-      font-size: var(--fs-sub);
-      font-weight: 700;
-      color: var(--text-muted);
-      margin-top: 10px;
     }
 
     /* 상단 네비게이션 바 */
@@ -546,15 +523,24 @@
     <!-- 고정 검색바 (한글 IME 조합 보호) -->
     <div id="searchCard" class="search-card">
       <span class="search-icon">🔍</span>
-      <input id="searchInp" class="search-input" type="search" placeholder="제품명이나 키워드를 입력하세요" autocomplete="off" />
+      <input id="searchInp" class="search-input" type="search" placeholder="제품명, 성분(나이아신아마이드 등), 고민(기미 등) 검색" autocomplete="off" />
       <button type="button" id="btnClearSearch" class="clear-btn">지우기</button>
     </div>
+
+    <!-- 추천 고민/성분 칩 영역 -->
+    <div id="quickChips" class="quick-chips-wrap"></div>
 
     <!-- 동적 콘텐츠 영역 -->
     <main id="mainContent"></main>
   </div>
 
   <script>
+    // =========================================================================
+    // [편집 포인트] 아래 QUICK_KEYWORDS 배열 안의 단어만 수정하면
+    // 검색창 아래 추천 칩 버튼이 바로 바뀝니다. (예: '기미', '나이아신아마이드')
+    // =========================================================================
+    const QUICK_KEYWORDS = ['기미', '잡티', '미백', '나이아신아마이드', '수분', '탄력'];
+
     const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR421CPOCTqRjP5M8FcqTsuSgKXsiTKghCzBl9sl51a2nMmfqhUg4r_hD_Oz1HXeYdz6cwZJpfmHXCt/pub?output=csv';
     const APP_SHARE_URL = 'https://kms-source.github.io/product-guide/';
 
@@ -573,6 +559,7 @@
     const searchCardEl = document.getElementById('searchCard');
     const searchInpEl = document.getElementById('searchInp');
     const clearSearchBtnEl = document.getElementById('btnClearSearch');
+    const quickChipsEl = document.getElementById('quickChips');
     const fontBtnEl = document.getElementById('btnFont');
     const mainEl = document.getElementById('mainContent');
 
@@ -582,6 +569,14 @@
       fontBtnEl.textContent = state.largeText ? '가- 기본 글씨' : '가+ 글자 크게';
     }
     applyFontMode();
+
+    function renderQuickChips() {
+      const currentQ = state.searchQuery.trim().toLowerCase();
+      quickChipsEl.innerHTML = QUICK_KEYWORDS.map(kw => {
+        const isActive = currentQ === String(kw).trim().toLowerCase();
+        return '<button type="button" class="chip-btn' + (isActive ? ' active' : '') + '" data-chip="' + escapeHtml(kw) + '">' + escapeHtml(kw) + '</button>';
+      }).join('');
+    }
 
     function notify(msg) {
       toastEl.textContent = msg;
@@ -779,6 +774,7 @@
             .map(s => normalizeImgUrl(s))
             .filter(Boolean);
           const videoUrl = getCol(r, ['영상링크', '유튜브', '교육영상', '동영상']);
+          const keywords = getCol(r, ['검색키워드', '키워드', '성분', '고민', '태그']);
 
           list.push({
             id: 'prod_' + i,
@@ -792,7 +788,8 @@
             thumb,
             detailItems,
             videoUrl,
-            embedUrl: getYoutubeEmbed(videoUrl)
+            embedUrl: getYoutubeEmbed(videoUrl),
+            keywords
           });
         }
 
@@ -906,7 +903,10 @@
 
     function renderMain() {
       clearSearchBtnEl.classList.toggle('show', state.searchQuery.length > 0);
-      searchCardEl.style.display = state.selectedProductId ? 'none' : 'flex';
+      const showSearchAndChips = !state.selectedProductId;
+      searchCardEl.style.display = showSearchAndChips ? 'flex' : 'none';
+      quickChipsEl.style.display = showSearchAndChips ? 'flex' : 'none';
+      renderQuickChips();
 
       if (state.loading) {
         mainEl.innerHTML = '<div class="card empty-box">제품 자료를 불러오는 중입니다...</div>';
@@ -935,12 +935,14 @@
         }
         state.selectedProductId = null;
         searchCardEl.style.display = 'flex';
+        quickChipsEl.style.display = 'flex';
       }
 
       const q = state.searchQuery.trim().toLowerCase();
       if (q) {
         const matched = state.products.filter(p =>
           p.name.toLowerCase().includes(q) ||
+          p.keywords.toLowerCase().includes(q) ||
           p.composition.toLowerCase().includes(q) ||
           p.price.toLowerCase().includes(q) ||
           p.category.toLowerCase().includes(q) ||
@@ -1004,6 +1006,20 @@
       state.searchQuery = '';
       searchInpEl.value = '';
       searchInpEl.focus();
+      renderMain();
+    });
+
+    quickChipsEl.addEventListener('click', e => {
+      const chipBtn = e.target.closest('[data-chip]');
+      if (!chipBtn) return;
+      const kw = chipBtn.getAttribute('data-chip') || '';
+      if (state.searchQuery.trim().toLowerCase() === kw.trim().toLowerCase()) {
+        state.searchQuery = '';
+        searchInpEl.value = '';
+      } else {
+        state.searchQuery = kw;
+        searchInpEl.value = kw;
+      }
       renderMain();
     });
 
