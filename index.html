@@ -1,1 +1,850 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>제품 교육 가이드</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #090d16;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      overflow-x: hidden;
+    }
+    .wrap {
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 12px 12px 72px 12px;
+    }
+    .card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .title-box { min-width: 0; }
+    .app-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .app-sub {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .icon-btn {
+      height: 34px;
+      padding: 0 10px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #060a13;
+      color: #e2e8f0;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .icon-btn.accent {
+      border-color: rgba(251, 191, 36, 0.5);
+      background: rgba(251, 191, 36, 0.14);
+      color: #fde68a;
+    }
+    .search-box {
+      display: flex;
+      gap: 6px;
+    }
+    .search-input {
+      flex: 1;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      background: #060a13;
+      color: #ffffff;
+      padding: 0 12px;
+      font-size: 13px;
+      outline: none;
+    }
+    .search-input:focus { border-color: #10b981; }
+    .clear-btn {
+      height: 42px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 900;
+      color: #fcd34d;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cat-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .cat-btn {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #334155;
+      background: #060a13;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .cat-btn.active {
+      border-color: #34d399;
+      background: rgba(16, 185, 129, 0.2);
+      color: #a7f3d0;
+    }
+    .line-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .line-card {
+      text-align: left;
+      padding: 14px 12px;
+      border-radius: 14px;
+      border: 1px solid #1e293b;
+      background: linear-gradient(145deg, #0b1324, #060a13);
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 82px;
+    }
+    .line-card:active { border-color: #34d399; }
+    .line-cat {
+      font-size: 10px;
+      font-weight: 800;
+      color: #34d399;
+      margin-bottom: 4px;
+    }
+    .line-name {
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.3;
+      word-break: keep-all;
+    }
+    .line-count {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 6px;
+    }
+    .back-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .back-btn {
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #e2e8f0;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .crumb {
+      font-size: 12px;
+      font-weight: 800;
+      color: #94a3b8;
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .prod-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .prod-item {
+      width: 100%;
+      text-align: left;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid #1e293b;
+      background: #060a13;
+      color: #ffffff;
+      cursor: pointer;
+    }
+    .prod-item:active { border-color: #34d399; }
+    .thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #1e293b;
+      border: 1px solid #334155;
+      flex-shrink: 0;
+    }
+    .thumb-placeholder {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex-shrink: 0;
+      padding: 4px;
+    }
+    .prod-info { flex: 1; min-width: 0; }
+    .prod-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.16);
+      color: #6ee7b7;
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+    .badge.video {
+      background: rgba(251, 191, 36, 0.16);
+      color: #fde68a;
+      border-color: rgba(251, 191, 36, 0.4);
+    }
+    .prod-name {
+      font-size: 14px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.3;
+    }
+    .prod-vol {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    .prod-summary {
+      font-size: 12px;
+      color: #cbd5e1;
+      margin-top: 4px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .detail-hero {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .detail-thumb {
+      width: 88px;
+      height: 88px;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 1px solid #334155;
+      background: #1e293b;
+      flex-shrink: 0;
+    }
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid #334155;
+    }
+    .video-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .sp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .sp-item {
+      background: #060a13;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #e2e8f0;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .sp-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: #10b981;
+      color: #060a13;
+      font-size: 11px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .detail-img {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+      margin-bottom: 8px;
+      background: #060a13;
+    }
+    .link-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 12px;
+      background: #10b981;
+      color: #060a13;
+      font-size: 13px;
+      font-weight: 900;
+      margin-top: 6px;
+    }
+    .empty-box {
+      text-align: center;
+      padding: 28px 14px;
+      color: #94a3b8;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .toast {
+      position: fixed;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      background: #1e293b;
+      color: #fde047;
+      border: 1px solid #fbbf24;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="wrap"></div>
 
+  <script>
+    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR421CPOCTqRjP5M8FcqTsuSgKXsiTKghCzBl9sl51a2nMmfqhUg4r_hD_Oz1HXeYdz6cwZJpfmHXCt/pub?output=csv';
+    const APP_SHARE_URL = 'https://kms-source.github.io/product-guide/';
+
+    const state = {
+      loading: true,
+      error: '',
+      products: [],
+      selectedCategory: '전체',
+      selectedLine: null,
+      selectedProductId: null,
+      searchQuery: '',
+      toast: ''
+    };
+
+    function notify(msg) {
+      state.toast = msg;
+      render();
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        state.toast = '';
+        render();
+      }, 2000);
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // RFC 4180 호환 CSV 파서 (셀 안의 쉼표·줄바꿈 지원)
+    function parseCSV(text) {
+      const clean = text.replace(/^\uFEFF/, '');
+      const rows = [];
+      let row = [];
+      let field = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < clean.length; i++) {
+        const ch = clean[i];
+        const next = clean[i + 1];
+        if (inQuotes) {
+          if (ch === '"' && next === '"') {
+            field += '"';
+            i++;
+          } else if (ch === '"') {
+            inQuotes = false;
+          } else {
+            field += ch;
+          }
+        } else {
+          if (ch === '"') {
+            inQuotes = true;
+          } else if (ch === ',') {
+            row.push(field);
+            field = '';
+          } else if (ch === '\r' && next === '\n') {
+            row.push(field);
+            rows.push(row);
+            row = [];
+            field = '';
+            i++;
+          } else if (ch === '\n' || ch === '\r') {
+            row.push(field);
+            rows.push(row);
+            row = [];
+            field = '';
+          } else {
+            field += ch;
+          }
+        }
+      }
+      if (field.length > 0 || row.length > 0) {
+        row.push(field);
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    function normKey(k) {
+      return String(k || '').replace(/\s+/g, '').trim();
+    }
+
+    // 구글 드라이브 공유 링크를 이미지 직접 주소로 자동 변환
+    function normalizeImgUrl(url) {
+      const u = String(url || '').trim();
+      if (!u) return '';
+      const m1 = u.match(/drive\.google\.com\/file\/d\/([^\/?#]+)/);
+      if (m1) return 'https://drive.google.com/thumbnail?id=' + m1[1] + '&sz=w1200';
+      const m2 = u.match(/drive\.google\.com\/open\?id=([^&]+)/);
+      if (m2) return 'https://drive.google.com/thumbnail?id=' + m2[1] + '&sz=w1200';
+      return u;
+    }
+
+    function isLikelyImage(url) {
+      const u = String(url || '').trim().toLowerCase();
+      if (!u) return false;
+      if (/\.(jpg|jpeg|png|webp|gif|bmp|svg)(\?.*)?$/.test(u)) return true;
+      if (u.includes('drive.google.com/thumbnail') || u.includes('googleusercontent.com') || u.startsWith('images/') || u.startsWith('./images/')) return true;
+      return false;
+    }
+
+    function getYoutubeEmbed(url) {
+      const u = String(url || '').trim();
+      if (!u) return '';
+      let id = '';
+      const m1 = u.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+      const m2 = u.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+      const m3 = u.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
+      const m4 = u.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
+      if (m1) id = m1[1];
+      else if (m2) id = m2[1];
+      else if (m3) id = m3[1];
+      else if (m4) id = m4[1];
+      return id ? 'https://www.youtube.com/embed/' + id : '';
+    }
+
+    async function loadSheetData(showToast) {
+      state.loading = true;
+      state.error = '';
+      render();
+      try {
+        const res = await fetch(SHEET_CSV_URL + '&_t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('시트 응답 오류 (' + res.status + ')');
+        const text = await res.text();
+        const rows = parseCSV(text);
+        if (rows.length < 2) {
+          state.products = [];
+          state.loading = false;
+          render();
+          return;
+        }
+
+        const headers = rows[0].map(normKey);
+        const getCol = (rowArr, names) => {
+          for (const n of names) {
+            const idx = headers.indexOf(normKey(n));
+            if (idx !== -1 && rowArr[idx] !== undefined) return String(rowArr[idx]).trim();
+          }
+          return '';
+        };
+
+        const list = [];
+        for (let i = 1; i < rows.length; i++) {
+          const r = rows[i];
+          if (!r || r.every(c => !String(c || '').trim())) continue;
+
+          const visibleRaw = getCol(r, ['노출여부', '노출']).toUpperCase();
+          if (['N', 'NO', 'X', '0', '숨김', '미사용'].includes(visibleRaw)) continue;
+
+          const name = getCol(r, ['제품명', '상품명']);
+          if (!name) continue;
+
+          const category = getCol(r, ['카테고리', '분류']) || '기타';
+          const line = getCol(r, ['라인', '제품라인', '브랜드라인']) || '기본 라인';
+          const volume = getCol(r, ['용량', '규격']);
+          const summary = getCol(r, ['한줄요약', '요약', '설명']);
+          const spRaw = getCol(r, ['셀링포인트', '특장점', '포인트']);
+          const sellingPoints = spRaw
+            .split(/\r?\n|\|/)
+            .map(s => s.replace(/^[-•*·]\s*/, '').trim())
+            .filter(Boolean);
+          const thumb = normalizeImgUrl(getCol(r, ['썸네일', '대표이미지', '이미지']));
+          const detailRaw = getCol(r, ['상세이미지', '상세페이지', '상세']);
+          const detailItems = detailRaw
+            .split(/\r?\n|\|/)
+            .map(s => normalizeImgUrl(s))
+            .filter(Boolean);
+          const videoUrl = getCol(r, ['영상링크', '유튜브', '교육영상', '동영상']);
+
+          list.push({
+            id: 'prod_' + i,
+            category,
+            line,
+            name,
+            volume,
+            summary,
+            sellingPoints,
+            thumb,
+            detailItems,
+            videoUrl,
+            embedUrl: getYoutubeEmbed(videoUrl)
+          });
+        }
+
+        state.products = list;
+        state.loading = false;
+        render();
+        if (showToast) notify('최신 시트 데이터를 불러왔습니다 (' + list.length + '개)');
+      } catch (err) {
+        state.loading = false;
+        state.error = '구글 시트를 불러오지 못했습니다. 웹에 게시 설정과 인터넷 연결을 확인해 주세요.';
+        render();
+      }
+    }
+
+    async function shareApp() {
+      const txt = '제품 교육 가이드 앱\n' + APP_SHARE_URL;
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: '제품 교육 가이드', text: txt, url: APP_SHARE_URL });
+          return;
+        }
+      } catch (e) {
+        if (e && e.name === 'AbortError') return;
+      }
+      try {
+        await navigator.clipboard.writeText(APP_SHARE_URL);
+        notify('앱 주소가 복사되었습니다');
+      } catch (e) {
+        notify('주소 복사에 실패했습니다');
+      }
+    }
+
+    function renderProductCard(p) {
+      const thumbHtml = p.thumb
+        ? '<img class="thumb" src="' + escapeHtml(p.thumb) + '" alt="' + escapeHtml(p.name) + '" onerror="this.style.display=\'none\'" />'
+        : '<div class="thumb-placeholder">이미지<br>준비중</div>';
+
+      return '<button type="button" class="prod-item" data-open-prod="' + p.id + '">' +
+        thumbHtml +
+        '<div class="prod-info">' +
+        '<div class="prod-badges">' +
+        '<span class="badge">' + escapeHtml(p.line) + '</span>' +
+        (p.videoUrl ? '<span class="badge video">▶ 영상</span>' : '') +
+        '</div>' +
+        '<div class="prod-name">' + escapeHtml(p.name) + '</div>' +
+        (p.volume ? '<div class="prod-vol">' + escapeHtml(p.volume) + '</div>' : '') +
+        (p.summary ? '<div class="prod-summary">' + escapeHtml(p.summary) + '</div>' : '') +
+        '</div></button>';
+    }
+
+    function renderDetail(p) {
+      const detailImages = p.detailItems.filter(isLikelyImage);
+      const detailLinks = p.detailItems.filter(u => !isLikelyImage(u));
+
+      let videoSection = '';
+      if (p.embedUrl) {
+        videoSection = '<div class="card">' +
+          '<div class="section-title"><span>🎬 제품 교육 영상</span></div>' +
+          '<div class="video-wrap"><iframe src="' + escapeHtml(p.embedUrl) + '" allowfullscreen></iframe></div>' +
+          '</div>';
+      } else if (p.videoUrl) {
+        videoSection = '<div class="card">' +
+          '<div class="section-title"><span>🎬 제품 교육 영상</span></div>' +
+          '<a class="link-btn" href="' + escapeHtml(p.videoUrl) + '" target="_blank" rel="noopener">교육 영상 보러가기</a>' +
+          '</div>';
+      }
+
+      const spSection = p.sellingPoints.length
+        ? '<div class="card">' +
+          '<div class="section-title"><span>✨ 핵심 셀링 포인트</span></div>' +
+          '<div class="sp-list">' +
+          p.sellingPoints.map((pt, i) => '<div class="sp-item"><span class="sp-num">' + (i + 1) + '</span><span>' + escapeHtml(pt) + '</span></div>').join('') +
+          '</div></div>'
+        : '';
+
+      const detailSection = '<div class="card">' +
+        '<div class="section-title"><span>📄 상세페이지 안내</span></div>' +
+        (detailImages.length
+          ? detailImages.map(src => '<img class="detail-img" src="' + escapeHtml(src) + '" alt="상세 이미지" />').join('')
+          : '') +
+        (detailLinks.length
+          ? detailLinks.map((lnk, idx) => '<a class="link-btn" href="' + escapeHtml(lnk) + '" target="_blank" rel="noopener">상세페이지 바로 보기' + (detailLinks.length > 1 ? ' (' + (idx + 1) + ')' : '') + '</a>').join('')
+          : '') +
+        (!detailImages.length && !detailLinks.length
+          ? '<div class="empty-box" style="padding:14px 6px;">등록된 상세 이미지가 없습니다.<br>구글 시트의 <b>상세이미지</b> 칸에 이미지 주소나 링크를 입력해 주세요.</div>'
+          : '') +
+        '</div>';
+
+      return '<div class="back-bar">' +
+        '<button type="button" class="back-btn" data-act="backFromDetail">← 목록으로</button>' +
+        '<div class="crumb">' + escapeHtml(p.category) + ' &gt; ' + escapeHtml(p.line) + '</div>' +
+        '</div>' +
+        '<div class="card">' +
+        '<div class="detail-hero">' +
+        (p.thumb
+          ? '<img class="detail-thumb" src="' + escapeHtml(p.thumb) + '" alt="' + escapeHtml(p.name) + '" onerror="this.style.display=\'none\'" />'
+          : '<div class="thumb-placeholder" style="width:88px;height:88px;">이미지<br>준비중</div>') +
+        '<div style="flex:1;min-width:0;">' +
+        '<div class="prod-badges"><span class="badge">' + escapeHtml(p.category) + '</span><span class="badge">' + escapeHtml(p.line) + '</span></div>' +
+        '<div style="font-size:17px;font-weight:900;color:#fff;line-height:1.3;">' + escapeHtml(p.name) + '</div>' +
+        (p.volume ? '<div style="font-size:12px;color:#94a3b8;margin-top:3px;">용량: ' + escapeHtml(p.volume) + '</div>' : '') +
+        '</div></div>' +
+        (p.summary ? '<div style="font-size:13px;color:#cbd5e1;line-height:1.5;background:#060a13;padding:10px;border-radius:10px;border:1px solid #1e293b;">' + escapeHtml(p.summary) + '</div>' : '') +
+        '</div>' +
+        videoSection +
+        spSection +
+        detailSection;
+    }
+
+    function render() {
+      const app = document.getElementById('app');
+      const headerHtml =
+        (state.toast ? '<div class="toast">' + escapeHtml(state.toast) + '</div>' : '') +
+        '<div class="card header">' +
+        '<div class="title-box">' +
+        '<div class="app-title">제품 교육 가이드</div>' +
+        '<div class="app-sub">카테고리 · 라인별 제품 안내 및 교육 자료</div>' +
+        '</div>' +
+        '<div class="header-actions">' +
+        '<button type="button" class="icon-btn" data-act="refresh">↻ 새로고침</button>' +
+        '<button type="button" class="icon-btn accent" data-act="share">공유</button>' +
+        '</div></div>';
+
+      if (state.loading) {
+        app.innerHTML = headerHtml + '<div class="card empty-box">구글 시트에서 제품 데이터를 불러오는 중입니다...</div>';
+        bind();
+        return;
+      }
+
+      if (state.error) {
+        app.innerHTML = headerHtml + '<div class="card empty-box">' + escapeHtml(state.error) + '</div>';
+        bind();
+        return;
+      }
+
+      if (state.products.length === 0) {
+        app.innerHTML = headerHtml +
+          '<div class="card empty-box">' +
+          '<div style="font-size:14px;font-weight:900;color:#fff;margin-bottom:8px;">아직 등록된 제품이 없습니다</div>' +
+          '구글 시트 1행에 아래 제목을 넣고 2행부터 제품을 입력한 뒤<br>상단 <b>새로고침</b>을 눌러주세요.<br><br>' +
+          '<div style="background:#060a13;border:1px solid #334155;border-radius:10px;padding:10px;font-size:11px;color:#6ee7b7;word-break:keep-all;">' +
+          '카테고리 | 라인 | 제품명 | 용량 | 한줄요약 | 셀링포인트 | 썸네일 | 상세이미지 | 영상링크 | 노출여부' +
+          '</div></div>';
+        bind();
+        return;
+      }
+
+      if (state.selectedProductId) {
+        const prod = state.products.find(p => p.id === state.selectedProductId);
+        if (prod) {
+          app.innerHTML = headerHtml + renderDetail(prod);
+          bind();
+          return;
+        }
+        state.selectedProductId = null;
+      }
+
+      const searchBar = '<div class="card search-box">' +
+        '<input id="searchInp" class="search-input" type="text" value="' + escapeHtml(state.searchQuery) + '" placeholder="제품명, 라인, 키워드 검색..." />' +
+        (state.searchQuery ? '<button type="button" class="clear-btn" data-act="clearSearch">지우기</button>' : '') +
+        '</div>';
+
+      const q = state.searchQuery.trim().toLowerCase();
+      if (q) {
+        const matched = state.products.filter(p =>
+          p.name.toLowerCase().includes(q) ||
+          p.line.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q) ||
+          p.summary.toLowerCase().includes(q) ||
+          p.sellingPoints.some(s => s.toLowerCase().includes(q))
+        );
+        app.innerHTML = headerHtml + searchBar +
+          '<div class="card">' +
+          '<div class="section-title"><span>검색 결과 (' + matched.length + '건)</span></div>' +
+          (matched.length
+            ? '<div class="prod-list">' + matched.map(renderProductCard).join('') + '</div>'
+            : '<div class="empty-box">일치하는 제품이 없습니다.</div>') +
+          '</div>';
+        bind();
+        return;
+      }
+
+      if (state.selectedLine) {
+        const inLine = state.products.filter(p => p.line === state.selectedLine);
+        app.innerHTML = headerHtml + searchBar +
+          '<div class="back-bar">' +
+          '<button type="button" class="back-btn" data-act="backToLines">← 라인 선택으로</button>' +
+          '<div class="crumb">' + escapeHtml(state.selectedLine) + ' (' + inLine.length + '개)</div>' +
+          '</div>' +
+          '<div class="card">' +
+          '<div class="prod-list">' + inLine.map(renderProductCard).join('') + '</div>' +
+          '</div>';
+        bind();
+        return;
+      }
+
+      const categories = ['전체', ...new Set(state.products.map(p => p.category))];
+      const filteredByCat = state.selectedCategory === '전체'
+        ? state.products
+        : state.products.filter(p => p.category === state.selectedCategory);
+
+      const lineMap = new Map();
+      filteredByCat.forEach(p => {
+        if (!lineMap.has(p.line)) {
+          lineMap.set(p.line, { line: p.line, category: p.category, count: 0 });
+        }
+        lineMap.get(p.line).count++;
+      });
+      const lines = Array.from(lineMap.values());
+
+      app.innerHTML = headerHtml + searchBar +
+        '<div class="card">' +
+        '<div class="section-title"><span>카테고리</span><span style="font-size:11px;color:#94a3b8;">총 ' + state.products.length + '개 제품</span></div>' +
+        '<div class="cat-tabs">' +
+        categories.map(c => '<button type="button" class="cat-btn' + (state.selectedCategory === c ? ' active' : '') + '" data-cat="' + escapeHtml(c) + '">' + escapeHtml(c) + '</button>').join('') +
+        '</div></div>' +
+        '<div class="card">' +
+        '<div class="section-title"><span>라인 선택</span><span style="font-size:11px;color:#94a3b8;">' + lines.length + '개 라인</span></div>' +
+        '<div class="line-grid">' +
+        lines.map(l =>
+          '<button type="button" class="line-card" data-line="' + escapeHtml(l.line) + '">' +
+          '<div><div class="line-cat">' + escapeHtml(l.category) + '</div><div class="line-name">' + escapeHtml(l.line) + '</div></div>' +
+          '<div class="line-count">제품 ' + l.count + '개 →</div>' +
+          '</button>'
+        ).join('') +
+        '</div></div>';
+
+      bind();
+    }
+
+    function bind() {
+      const sInp = document.getElementById('searchInp');
+      if (sInp) {
+        sInp.oninput = e => {
+          state.searchQuery = e.target.value;
+          const pos = e.target.selectionStart;
+          render();
+          const reInp = document.getElementById('searchInp');
+          if (reInp) {
+            reInp.focus();
+            reInp.setSelectionRange(pos, pos);
+          }
+        };
+      }
+      document.querySelectorAll('[data-cat]').forEach(el => {
+        el.onclick = () => {
+          state.selectedCategory = el.getAttribute('data-cat');
+          render();
+        };
+      });
+      document.querySelectorAll('[data-line]').forEach(el => {
+        el.onclick = () => {
+          state.selectedLine = el.getAttribute('data-line');
+          window.scrollTo(0, 0);
+          render();
+        };
+      });
+      document.querySelectorAll('[data-open-prod]').forEach(el => {
+        el.onclick = () => {
+          state.selectedProductId = el.getAttribute('data-open-prod');
+          window.scrollTo(0, 0);
+          render();
+        };
+      });
+      document.querySelectorAll('[data-act]').forEach(el => {
+        el.onclick = () => {
+          const act = el.getAttribute('data-act');
+          if (act === 'refresh') loadSheetData(true);
+          else if (act === 'share') shareApp();
+          else if (act === 'clearSearch') { state.searchQuery = ''; render(); }
+          else if (act === 'backToLines') { state.selectedLine = null; window.scrollTo(0, 0); render(); }
+          else if (act === 'backFromDetail') { state.selectedProductId = null; window.scrollTo(0, 0); render(); }
+        };
+      });
+    }
+
+    loadSheetData(false);
+  </script>
+</body>
+</html>
